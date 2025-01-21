@@ -1,0 +1,74 @@
+<aura:component controller="UserDataController" implements="force:appHostable,flexipage:availableForAllPageTypes"
+    access="global">
+    <!-- Atributos -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="records" type="List" />
+    <aura:attribute name="selectedRecord" type="UserData__c" />
+    <aura:attribute name="newUser" type="UserData__c" default="{'sobjectType': 'UserData__c'}" />
+    <aura:attribute name="columns" type="List" default="[
+        { 'label': 'Name', 'fieldName': 'Name', 'type': 'text' },
+        { 'label': 'Username', 'fieldName': 'Username__c', 'type': 'text' },
+        { 'label': 'Email', 'fieldName': 'Email__c', 'type': 'email' },
+        { 'label': 'City', 'fieldName': 'City__c', 'type': 'text' },
+        { 'label': 'Phone', 'fieldName': 'Phone__c', 'type': 'text' }
+    ]" />
+    <aura:attribute name="isEditMode" type="Boolean" default="false" />
+
+    <lightning:card title="Gestión de Usuarios" iconName="standard:people">
+        <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
+            <div class="slds-size_1-of-1 slds-m-bottom_medium">
+                <lightning:recordEditForm aura:id="recordForm" objectApiName="UserData__c"
+                    recordId="{!v.isEditMode ? v.selectedRecord.Id : ''}" onsuccess="{!c.handleSuccess}"
+                    onerror="{!c.handleError}">
+                    <div class="slds-grid slds-gutters slds-m-bottom_x-small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Name" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Username__c" />
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-bottom_x-small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Email__c" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Street__c" />
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-bottom_x-small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Suite__c" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="City__c" />
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-bottom_x-small">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Zipcode__c" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:inputField fieldName="Phone__c" />
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-justify_end slds-m-top_small">
+                        <lightning:button label="Nuevo" onclick="{!c.clearForm}" variant="neutral"
+                            class="slds-m-right_small" />
+                        <lightning:button type="submit" label="{!v.isEditMode ? 'Guardar' : 'Crear/Actualizar'}"
+                            variant="brand" />
+                    </div>
+                </lightning:recordEditForm>
+            </div>
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:datatable data="{!v.records}" columns="{!v.columns}" keyField="Id" hideCheckboxColumn="false"
+                    onrowselection="{!c.handleRowSelection}" class="slds-m-top_medium" />
+            </div>
+            <div class="slds-grid slds-wrap slds-gutters slds-p-around_small">
+                <lightning:button label="Editar" onclick="{!c.editRecord}" variant="neutral"
+                    class="slds-m-right_small" />
+                <lightning:button label="Eliminar" onclick="{!c.deleteRecord}" variant="destructive" />
+            </div>
+        </div>
+    </lightning:card>
+</aura:component>
